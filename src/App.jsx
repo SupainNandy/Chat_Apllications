@@ -16,10 +16,10 @@ const App = () => {
   return (
     <div>
       <Routes>
-        <Route path='/' element={userData?<Home/>:<Navigate  to="/login" />} />
-        <Route path='/profile' element={userData?<Profile/>:<Navigate  to="/signup" />} />
-        <Route path='/login' element={!userData?<Login/>:<Navigate to="/"/>} />
-        <Route path='/signup' element={!userData?<SignUp/>:<Navigate  to="/profile"/>} />
+        <Route path='/' element={userData?<Home/>:<Navigate to="/login" />} />
+        <Route path='/profile' element={userData?<Profile/>:<Navigate to="/login" />} />
+        <Route path='/login' element={!userData?<Login/>:<Navigate to="/" />} />
+        <Route path='/signup' element={!userData?<SignUp/>:<Navigate to="/profile" />} />
         {/* <Route path='*' element={<Navigate to='/login'  />} /> */}
       </Routes>
       

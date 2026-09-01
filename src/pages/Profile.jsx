@@ -94,6 +94,7 @@ const Profile = () => {
       }
 
       alert("Profile updated successfully!");
+      navigate("/");
 
     } catch (error) {
       console.log("Profile Update Error:", error);
