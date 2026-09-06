@@ -4,7 +4,7 @@ import MessageArea from '../component/MessageArea'
 
 const Home = () => {
   return (
-    <div className='flex w-full h-[100vh]'>
+    <div className='flex w-full h-[100vh] overflow-hidden '>
       <Sidebar/>
       <MessageArea/>
     </div>

@@ -35,105 +35,119 @@ const Sidebar = () => {
     }
 
     return (
-        <div className='lg:w-[30%] w-full h-full bg-slate-200'>
-            <div className='w-full h-[300px] bg-[#20c7ff] rounded-b-[30%] shadow-lg flex items-center justify-start px-[20px]'>
-                <h1 className='text-white font-bold text-[30px]'>chat</h1>
-            </div>
-
-            <div
-                className='flex items-center gap-4 px-4 mt-[-60px] cursor-pointer'
-                onClick={() => navigate('/profile')}
-            >
-                <div className='w-[120px] h-[120px] rounded-full overflow-hidden border-4 border-white bg-gray-200 flex justify-center items-center shadow-md' >
-                    <img
-                        src={userData?.image || defaultAvatar}
-                        alt="profile"
-                        className='w-full h-full object-cover'
-                    />
+        <div className='lg:w-[30%] w-full h-full bg-slate-50 border-r border-slate-200 flex flex-col shadow-[4px_0_24px_rgba(0,0,0,0.02)] z-20'>
+            {/* Header Area */}
+            <div className='w-full shrink-0 bg-white px-6 py-5 flex items-center justify-between border-b border-slate-100'>
+                <h1 className='text-slate-800 font-extrabold text-2xl tracking-tight'>Chats</h1>
+                
+                <div
+                    className='flex items-center gap-3 cursor-pointer hover:bg-slate-50 p-2 rounded-xl transition-colors'
+                    onClick={() => navigate('/profile')}
+                >
+                    <div className='flex flex-col items-end hidden xl:flex'>
+                        <span className='text-sm font-bold text-slate-700'>{userData?.name || 'User'}</span>
+                        <span className='text-[10px] text-green-500 font-bold uppercase tracking-wider'>Online</span>
+                    </div>
+                    <div className='w-11 h-11 rounded-full overflow-hidden border-2 border-[#20c7ff] shadow-sm relative'>
+                        <img
+                            src={userData?.image || defaultAvatar}
+                            alt="profile"
+                            className='w-full h-full object-cover'
+                        />
+                        <div className='absolute inset-0 rounded-full border border-black/10'></div>
+                    </div>
                 </div>
-                <h1 className='text-lg font-semibold'>Hi, {userData?.name || 'User'}</h1>
             </div>
 
-            <div className='px-4 mt-5'>
-                <div className='flex items-center gap-3'>
-                    {!search && (
+            <div className='px-6 mt-6 flex-1 flex flex-col min-h-0 pb-6'>
+                {/* Search Bar */}
+                <div className='relative shrink-0 mb-6'>
+                    <IoIosSearch className='absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400' />
+                    <input
+                        type="text"
+                        placeholder='Search messages...'
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className='w-full h-[50px] pl-12 pr-10 rounded-2xl bg-white border border-slate-200 text-sm outline-none focus:ring-2 focus:ring-[#20c7ff]/50 focus:border-[#20c7ff] transition-all shadow-sm text-slate-700 placeholder-slate-400 font-medium'
+                    />
+                    {searchTerm && (
                         <button
                             type='button'
-                            onClick={() => setSearch(true)}
-                            className='w-[50px] h-[50px] rounded-full bg-white flex justify-center items-center shadow-md cursor-pointer'
+                            onClick={() => setSearchTerm('')}
+                            className='absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center bg-slate-100 rounded-full text-slate-500 hover:bg-slate-200 hover:text-slate-700 transition'
                         >
-                            <IoIosSearch className='w-[25px] h-[25px] text-gray-600'/>
+                            ×
                         </button>
-                    )}
-                    {search && (
-                        <div className='relative w-full'>
-                            <input
-                                type="text"
-                                placeholder='Search friends'
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                autoFocus
-                                className='w-full h-[45px] rounded-full border border-gray-300 bg-white px-4 pr-10 text-sm outline-none focus:border-[#20c7ff]'
-                            />
-                            <button
-                                type='button'
-                                onClick={() => {
-                                    setSearch(false)
-                                    setSearchTerm('')
-                                }}
-                                className='absolute right-3 top-1/2 -translate-y-1/2 text-xl text-gray-600 hover:text-gray-900 font-medium cursor-pointer'
-                            >
-                                ×
-                            </button>
-                        </div>
                     )}
                 </div>
 
-                <div className='mt-5'>
-                    <h2 className='text-xs font-semibold uppercase tracking-wide text-slate-500 mb-3'>Active now</h2>
+                {/* Contacts List */}
+                <div className='flex-1 flex flex-col min-h-0'>
+                    <div className='flex items-center justify-between mb-4 shrink-0 px-1'>
+                        <h2 className='text-xs font-bold uppercase tracking-widest text-slate-400'>Recent Conversations</h2>
+                        <span className='bg-[#20c7ff]/10 text-[#20c7ff] text-[10px] font-bold px-2 py-1 rounded-md'>
+                            {filteredUsers.length}
+                        </span>
+                    </div>
 
-                    <div className='space-y-3 max-h-[340px] overflow-y-auto'>
+                    <div className='space-y-2 flex-1 overflow-y-auto pr-1'>
                         {filteredUsers.length > 0 ? (
                             filteredUsers.map((user) => (
                                 <div
                                     key={user?._id || user?.email}
                                     onClick={() => dispatch(setSelectedUser(user))}
-                                    className='flex items-center gap-3 bg-white rounded-2xl p-2 shadow-sm cursor-pointer hover:bg-slate-50'
+                                    className='group flex items-center gap-4 bg-white hover:bg-slate-100 rounded-2xl p-3 cursor-pointer transition-all duration-200 border border-slate-100 hover:border-slate-200 hover:shadow-sm'
                                 >
-                                    <div className='relative'>
-                                        <div className='w-[52px] h-[52px] rounded-full overflow-hidden border-2 border-white bg-gray-200 flex justify-center items-center'>
+                                    <div className='relative shrink-0'>
+                                        <div className='w-14 h-14 rounded-full overflow-hidden bg-slate-200 shadow-inner'>
                                             <img
                                                 src={user?.image || defaultAvatar}
                                                 alt={user?.name || 'User'}
                                                 className='w-full h-full object-cover'
                                             />
                                         </div>
-                                        <span
-                                            className={`absolute bottom-0 right-0 block w-3 h-3 rounded-full border-2 border-white ${user?.isOnline ? 'bg-green-500' : 'bg-gray-400'}`}
-                                            title={user?.isOnline ? 'Online' : 'Offline'}
-                                        />
+                                        {user?.isOnline && (
+                                            <span
+                                                className='absolute bottom-0 right-0 block w-3.5 h-3.5 rounded-full bg-green-500 border-2 border-white shadow-sm'
+                                                title='Online'
+                                            />
+                                        )}
                                     </div>
 
-                                    <div className='flex-1'>
-                                        <p className='font-medium text-slate-700'>{user?.name || 'Unknown User'}</p>
-                                        <p className='text-xs text-slate-500'>
-                                            {user?.isOnline ? 'online' : 'offline'}
+                                    <div className='flex-1 min-w-0'>
+                                        <div className='flex justify-between items-baseline mb-1'>
+                                            <p className='font-bold text-slate-800 truncate text-[15px] group-hover:text-[#20c7ff] transition-colors'>
+                                                {user?.name || 'Unknown User'}
+                                            </p>
+                                            <p className='text-[10px] font-medium text-slate-400'>
+                                                {user?.isOnline ? 'Now' : ''}
+                                            </p>
+                                        </div>
+                                        <p className='text-[13px] text-slate-500 truncate'>
+                                            {user?.isOnline ? 'Active right now' : 'Offline'}
                                         </p>
                                     </div>
                                 </div>
                             ))
                         ) : (
-                            <p className='text-sm text-slate-500'>No other users found</p>
+                            <div className='flex flex-col items-center justify-center h-full text-slate-400 gap-2'>
+                                <IoIosSearch className='w-8 h-8 opacity-50' />
+                                <p className='text-sm font-medium'>No users found</p>
+                            </div>
                         )}
                     </div>
                 </div>
 
+                {/* Logout Button */}
                 <button
                     type='button'
                     onClick={handleLogout}
-                    className='mt-6 w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-3 rounded-full shadow-md transition'
+                    className='mt-6 shrink-0 w-full flex items-center justify-center gap-3 bg-gradient-to-br from-slate-800 to-slate-900 hover:from-red-500 hover:to-rose-600 text-white font-bold py-4 rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group'
                 >
-                    Logout
+                    <svg className="w-5 h-5 opacity-70 group-hover:opacity-100 group-hover:rotate-12 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                    </svg>
+                    <span className='tracking-wide'>Sign Out</span>
                 </button>
             </div>
         </div>
