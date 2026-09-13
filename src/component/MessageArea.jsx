@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedUser } from "../redux/userSlice";
-import { setMessages } from "../redux/messageSlice";
+import { setMessages, addMessage, removeMessage } from "../redux/messageSlice";
 import SenderMessage from "./SenderMessage";
 import ReciverMessage from "./ReciverMessage";
 import { serverUrl } from "../config";
 import api from "../api";
-import { getSocket } from "../socket";
+import { useSocket } from "../socket";
 import { 
   IoMenuOutline, 
   IoEllipsisVertical,
@@ -25,7 +25,7 @@ const MessageArea = () => {
   const dispatch = useDispatch();
   const { selectedUser, userData, onlineUser } = useSelector((state) => state.user);
   const { messages } = useSelector((state) => state.message);
-  const socket = getSocket();
+  const { socket } = useSocket();
 
   const [input, setInput] = useState("");
   const [isSending, setIsSending] = useState(false);
@@ -92,7 +92,9 @@ const MessageArea = () => {
 
       const result = await api.post(`/api/message/send/${selectedUser._id}`, formData);
 
-      dispatch(setMessages([...messages, result.data.data]));
+      if (result.data?.data) {
+        dispatch(addMessage(result.data.data));
+      }
       setInput("");
       setBackendImage(null);
       setFrontendImage(null);
@@ -107,26 +109,35 @@ const MessageArea = () => {
   const handleDeleteMessage = async (messageId) => {
     try {
       await api.delete(`/api/message/delete/${messageId}`);
-      dispatch(setMessages(messages.filter((msg) => msg._id !== messageId)));
+      dispatch(removeMessage(messageId));
     } catch (err) {
       console.error("Error deleting message:", err);
     }
   };
 
   useEffect(() => {
-    socket?.on("newMessage", (message) => {
-      if (selectedUser?._id === message.sender) {
-        dispatch(setMessages([...messages, message]));
+    if (!socket) return;
+
+    const handleNewMessage = (newMessage) => {
+      if (!newMessage) return;
+      const senderId = typeof newMessage.sender === 'object' ? newMessage.sender?._id : newMessage.sender;
+      if (selectedUser && String(selectedUser._id) === String(senderId)) {
+        dispatch(addMessage(newMessage));
       }
-    });
-    socket?.on("messageDeleted", (messageId) => {
-      dispatch(setMessages(messages.filter((msg) => msg._id !== messageId)));
-    });
-    return () => {
-      socket?.off("newMessage");
-      socket?.off("messageDeleted");
     };
-  }, [messages, dispatch, socket, selectedUser]);
+
+    const handleMessageDeleted = (deletedMessageId) => {
+      dispatch(removeMessage(deletedMessageId));
+    };
+
+    socket.on("newMessage", handleNewMessage);
+    socket.on("messageDeleted", handleMessageDeleted);
+
+    return () => {
+      socket.off("newMessage", handleNewMessage);
+      socket.off("messageDeleted", handleMessageDeleted);
+    };
+  }, [socket, selectedUser, dispatch]);
 
   const getDateLabel = (dateString) => {
     if (!dateString) return "Today";

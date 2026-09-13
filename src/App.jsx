@@ -37,21 +37,6 @@ const App = () => {
     fetchOtherUsers();
   }, [dispatch]);
 
-  // Socket handling for online users
-  useEffect(() => {
-    if (userData?._id) {
-      const socket = initSocket(userData._id);
-      const handleOnlineUsers = (users) => {
-        dispatch(setOnlineUser(users));
-      };
-      socket.on('getOnlineUsers', handleOnlineUsers);
-      return () => {
-        socket.off('getOnlineUsers', handleOnlineUsers);
-      };
-    } else {
-      disconnectSocket();
-    }
-  }, [userData?._id, dispatch]);
 
 
 
