@@ -18,10 +18,13 @@ import EmojiPicker from 'emoji-picker-react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 
+import { getSocket } from "../socket";
+
 const MessageArea = () => {
   const dispatch = useDispatch();
-  const { selectedUser, userData, onlineUser, socket } = useSelector((state) => state.user);
+  const { selectedUser, userData, onlineUser } = useSelector((state) => state.user);
   const { messages } = useSelector((state) => state.message);
+  const socket = getSocket();
 
   const [input, setInput] = useState("");
   const [isSending, setIsSending] = useState(false);

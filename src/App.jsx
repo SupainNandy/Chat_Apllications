@@ -9,46 +9,29 @@ import getOtherUsers from './customHooks/getOtherUsers'
 import { useSelector, useDispatch } from 'react-redux'
 import Home from './pages/Home'
 import Profile from './pages/Profile'
-import { io } from 'socket.io-client'
-import { serverUrl } from './config'
-import { setSocket, setOnlineUser } from './redux/userSlice'
+import { setOnlineUser } from './redux/userSlice'
+import { initSocket, disconnectSocket } from './socket'
 
 const App = () => {
   getCurrentUser()
   getOtherUsers()
-  let {userData,socket,onlineUser} = useSelector(state=>state.user)
+  let {userData,onlineUser} = useSelector(state=>state.user)
   let dispatch = useDispatch()
-
-  
 
   useEffect(()=>{
     if(userData){
-      const socketio = io(`${serverUrl}`,{
-      withCredentials:true,
-      query:{
-        userId:userData?._id,
+      const socketio = initSocket(userData._id)
+
+      socketio.on("getOnlineUsers",(users)=>{
+        dispatch(setOnlineUser(users))
+      })
+
+      return ()=>{
+        disconnectSocket()
       }
-    })
-
-    dispatch(setSocket(socketio))
-
-    socketio.on("getOnlineUsers",(users)=>{
-      dispatch(setOnlineUser(users))
-    })
-
-    return ()=>{
-      socketio.close()
-      dispatch(setSocket(null))
+    } else {
+      disconnectSocket()
     }
-    }
-   else{
-    if(socket){
-      socket.close()
-      dispatch(setSocket(null))
-    }
-   }
-
-    
   },[userData])
 
 
