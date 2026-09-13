@@ -2,7 +2,8 @@ import React, { useRef, useState } from "react";
 import { IoCameraOutline, IoArrowBack, IoPersonOutline, IoAtOutline, IoMailOutline, IoSunnyOutline, IoMoonOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import axios from "../api";
+import axios from "axios";
+import { serverUrl } from "../config.js";
 import { setUserData } from "../redux/userSlice.js";
 import { useTheme } from "../context/ThemeContext";
 
@@ -43,7 +44,7 @@ const Profile = () => {
       }
 
       const result = await axios.put(
-        `/api/user/profile`,
+        `${serverUrl}/api/user/profile`,
         formData,
         {
           withCredentials: true,

@@ -1,7 +1,8 @@
 import React, { useState, useRef } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import axios from "../api";
+import axios from "axios";
+import { serverUrl } from "../config";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUserData } from "../redux/userSlice";
@@ -40,7 +41,7 @@ const Login = () => {
     onSubmit: async (values, { setSubmitting }) => {
       try {
         const response = await axios.post(
-          `/api/auth/login`,
+          `${serverUrl}/api/auth/login`,
           {
             email: values.email,
             password: values.password,
@@ -69,7 +70,7 @@ const Login = () => {
           const result = await signInWithPopup(auth, googleProvider);
           const user = result.user;
           
-          const response = await axios.post(`/api/auth/google`, {
+          const response = await axios.post(`${serverUrl}/api/auth/google`, {
               email: user.email,
               name: user.displayName,
               photoURL: user.photoURL,

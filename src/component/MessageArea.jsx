@@ -5,7 +5,7 @@ import { setMessages } from "../redux/messageSlice";
 import SenderMessage from "./SenderMessage";
 import ReciverMessage from "./ReciverMessage";
 import { serverUrl } from "../config";
-import axios from "../api";
+import axios from "axios";
 import { 
   IoMenuOutline, 
   IoEllipsisVertical,
@@ -18,7 +18,7 @@ import EmojiPicker from 'emoji-picker-react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 
-import { getSocket } from "../socket";
+
 
 const MessageArea = () => {
   const dispatch = useDispatch();
