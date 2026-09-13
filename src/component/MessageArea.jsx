@@ -6,6 +6,7 @@ import SenderMessage from "./SenderMessage";
 import ReciverMessage from "./ReciverMessage";
 import { serverUrl } from "../config";
 import api from "../api";
+import { getSocket } from "../socket";
 import { 
   IoMenuOutline, 
   IoEllipsisVertical,
