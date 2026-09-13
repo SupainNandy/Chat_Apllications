@@ -4,40 +4,58 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import SignUp from './pages/SignUp'
 import Login from './pages/Login'
 import Landing from './pages/Landing'
-import getCurrentUser from './customHooks/getCurrentUser'
-import getOtherUsers from './customHooks/getOtherUsers'
 import { useSelector, useDispatch } from 'react-redux'
 import Home from './pages/Home'
 import Profile from './pages/Profile'
-import { setOnlineUser } from './redux/userSlice'
+import { setOnlineUser, setUserData, setOtherUser } from './redux/userSlice'
 import { initSocket, disconnectSocket } from './socket'
+import api from './api'
 
 const App = () => {
-  getCurrentUser()
-  getOtherUsers()
-  let {userData,onlineUser} = useSelector(state=>state.user)
-  let dispatch = useDispatch()
+  const { userData } = useSelector(state => state.user);
+  const dispatch = useDispatch();
 
-  useEffect(()=>{
-    if(userData){
-      const socketio = initSocket(userData._id)
-
-      socketio.on("getOnlineUsers",(users)=>{
-        dispatch(setOnlineUser(users))
-      })
-
-      return ()=>{
-        disconnectSocket()
+  // Fetch current user and other users on mount
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        const result = await api.get('/api/user/current');
+        dispatch(setUserData(result.data.user || result.data));
+      } catch (err) {
+        console.error('Failed to fetch current user:', err);
       }
+    };
+    const fetchOtherUsers = async () => {
+      try {
+        const result = await api.get('/api/user/others');
+        dispatch(setOtherUser(result.data.users || []));
+      } catch (err) {
+        console.error('Failed to fetch other users:', err);
+      }
+    };
+    fetchCurrentUser();
+    fetchOtherUsers();
+  }, [dispatch]);
+
+  // Socket handling for online users
+  useEffect(() => {
+    if (userData) {
+      const socket = initSocket(userData._id);
+      socket.on('getOnlineUsers', users => {
+        dispatch(setOnlineUser(users));
+      });
+      return () => {
+        disconnectSocket();
+      };
     } else {
-      disconnectSocket()
+      disconnectSocket();
     }
-  },[userData])
+  }, [userData, dispatch]);
 
 
 
   return (
-    <div>ssss
+    <div>
       <Routes>
         <Route path='/' element={userData ? <Home/> : <Landing />} />
         <Route path='/profile' element={userData ? <Profile/> : <Navigate to="/login" />} />

@@ -17,18 +17,6 @@ const Sidebar = () => {
     const [searchTerm, setSearchTerm] = useState('')
     const listRef = useRef(null)
 
-    React.useEffect(() => {
-        if (listRef.current && filteredUsers.length > 0) {
-            gsap.from(".sidebar-user-item", {
-                y: 10,
-                opacity: 0,
-                duration: 0.4,
-                stagger: 0.05,
-                ease: "power2.out"
-            });
-        }
-    }, [filteredUsers]);
-
     const defaultAvatar = "https://img.magnific.com/premium-vector/vector-flat-illustration-grayscale-avatar-user-profile-person-icon-gender-neutral-silhouette-profile-picture-suitable-social-media-profiles-icons-screensavers-as-templatex9xa_719432-2210.jpg?semt=ais_hybrid&w=740&q=80"
 
     const usersToShow = (otherUsers || []).map((user) => ({
@@ -43,6 +31,18 @@ const Sidebar = () => {
 
     const onlineUsers = filteredUsers.filter(u => u.isOnline);
     const offlineUsers = filteredUsers.filter(u => !u.isOnline);
+
+    React.useEffect(() => {
+        if (listRef.current && filteredUsers.length > 0) {
+            gsap.from(".sidebar-user-item", {
+                y: 10,
+                opacity: 0,
+                duration: 0.4,
+                stagger: 0.05,
+                ease: "power2.out"
+            });
+        }
+    }, [filteredUsers]);
 
     const handleLogout = async () => {
         try {
