@@ -1,7 +1,6 @@
 import axios from "../api";
 import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { serverUrl } from "../config"
 import { setOtherUser } from "../redux/userSlice"
 
 const getOtherUsers = () =>{
@@ -14,9 +13,7 @@ const getOtherUsers = () =>{
             if (!userData) return;
             
             try{
-                let result = await axios.get(`${serverUrl}/api/user/others`, {
-                    withCredentials: true,
-                })
+                let result = await axios.get(`/api/user/others`)
                 dispatch(setOtherUser(result.data.users || result.data))
 
             }catch(err){

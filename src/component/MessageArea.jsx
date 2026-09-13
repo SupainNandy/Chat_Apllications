@@ -83,9 +83,7 @@ const MessageArea = () => {
       if (input.trim()) formData.append("message", input);
       if (backendImage) formData.append("image", backendImage);
 
-      const result = await axios.post(`${serverUrl}/api/message/send/${selectedUser._id}`, formData, {
-        withCredentials: true
-      });
+      const result = await axios.post(`/api/message/send/${selectedUser._id}`, formData);
 
       dispatch(setMessages([...messages, result.data.data]));
       setInput("");
@@ -101,7 +99,7 @@ const MessageArea = () => {
 
   const handleDeleteMessage = async (messageId) => {
     try {
-      await axios.delete(`${serverUrl}/api/message/delete/${messageId}`, { withCredentials: true });
+      await axios.delete(`/api/message/delete/${messageId}`);
       dispatch(setMessages(messages.filter((msg) => msg._id !== messageId)));
     } catch (err) {
       console.error("Error deleting message:", err);

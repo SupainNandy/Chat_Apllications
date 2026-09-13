@@ -3,7 +3,6 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "../api";
 import { useNavigate, Link } from "react-router-dom";
-import { serverUrl } from "../config";
 import { useDispatch } from "react-redux";
 import { setUserData } from "../redux/userSlice";
 import { IoMailOutline, IoLockClosedOutline, IoPersonOutline, IoAtOutline, IoEyeOutline, IoEyeOffOutline, IoArrowBackOutline } from "react-icons/io5";
@@ -57,7 +56,7 @@ const SignUp = () => {
         };
 
         const response = await axios.post(
-          `${serverUrl}/api/auth/create`,
+          `/api/auth/create`,
           userData,
           {
             withCredentials: true,
@@ -82,7 +81,7 @@ const SignUp = () => {
           const result = await signInWithPopup(auth, googleProvider);
           const user = result.user;
           
-          const response = await axios.post(`${serverUrl}/api/auth/google`, {
+          const response = await axios.post(`/api/auth/google`, {
               email: user.email,
               name: user.displayName,
               photoURL: user.photoURL,
