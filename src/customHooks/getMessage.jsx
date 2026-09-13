@@ -12,7 +12,7 @@ const getMessage = () =>{
         const fetchUsers=async()=>{
             if (!selectedUser) return;
             try{
-                let result = await axios.get(${serverUrl}/api/message/get/, {
+                let result = await axios.get(`${serverUrl}/api/message/get/`, {
                     withCredentials: true,
                 })
                 dispatch(setMessages(Array.isArray(result.data) ? result.data : (result.data.data || [])))

@@ -12,7 +12,7 @@ const getOtherUsers = () =>{
         const fetchUsers=async()=>{
             if (!userData) return;
             try{
-                let result = await axios.get(${serverUrl}/api/user/others, {
+                let result = await axios.get(`${serverUrl}/api/user/others`, {
                     withCredentials: true,
                 })
                 dispatch(setOtherUser(result.data.users || result.data))
