@@ -18,8 +18,14 @@ api.interceptors.response.use(
                 // Retry the original request
                 return api(originalRequest);
             } catch (refreshError) {
-                // If refresh fails, user might need to log in again
-                console.error('Session expired. Please log in again.');
+                // Refresh token is also expired — force user back to login
+                console.warn('Session expired. Redirecting to login...');
+                // Clear any persisted auth state from redux store via a storage event
+                localStorage.removeItem('userData');
+                // Redirect to login without a full page reload loop
+                if (window.location.pathname !== '/login') {
+                    window.location.href = '/login';
+                }
                 return Promise.reject(refreshError);
             }
         }
