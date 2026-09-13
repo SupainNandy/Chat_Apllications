@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import { IoCameraOutline, IoArrowBack, IoPersonOutline, IoAtOutline, IoMailOutline, IoSunnyOutline, IoMoonOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "../api";
 import { serverUrl } from "../config.js";
 import { setUserData } from "../redux/userSlice.js";
 import { useTheme } from "../context/ThemeContext";

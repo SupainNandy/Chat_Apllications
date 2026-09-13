@@ -5,7 +5,7 @@ import { setMessages } from "../redux/messageSlice";
 import SenderMessage from "./SenderMessage";
 import ReciverMessage from "./ReciverMessage";
 import { serverUrl } from "../config";
-import axios from "axios";
+import axios from "../api";
 import { 
   IoMenuOutline, 
   IoEllipsisVertical,

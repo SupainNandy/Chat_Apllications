@@ -1,4 +1,4 @@
-import axios from "axios"
+import axios from "../api";
 import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { serverUrl } from "../config"

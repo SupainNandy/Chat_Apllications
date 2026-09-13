@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { IoIosSearch } from "react-icons/io"
 import { IoLogOutOutline, IoSettingsOutline, IoChevronDown, IoChatbubbleOutline, IoPeopleOutline, IoFolderOutline, IoGridOutline } from "react-icons/io5"
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import axios from "../api";
 import { serverUrl } from '../config'
 import { clearUserData, setSelectedUser } from '../redux/userSlice'
 import gsap from 'gsap'

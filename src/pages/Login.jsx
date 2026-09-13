@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import axios from "axios";
+import axios from "../api";
 import { useNavigate, Link } from "react-router-dom";
 import { serverUrl } from "../config";
 import { useDispatch } from "react-redux";
