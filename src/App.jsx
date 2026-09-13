@@ -39,18 +39,19 @@ const App = () => {
 
   // Socket handling for online users
   useEffect(() => {
-    if (userData) {
+    if (userData?._id) {
       const socket = initSocket(userData._id);
-      socket.on('getOnlineUsers', users => {
+      const handleOnlineUsers = (users) => {
         dispatch(setOnlineUser(users));
-      });
+      };
+      socket.on('getOnlineUsers', handleOnlineUsers);
       return () => {
-        disconnectSocket();
+        socket.off('getOnlineUsers', handleOnlineUsers);
       };
     } else {
       disconnectSocket();
     }
-  }, [userData, dispatch]);
+  }, [userData?._id, dispatch]);
 
 
 

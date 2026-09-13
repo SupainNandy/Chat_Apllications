@@ -4,7 +4,10 @@ import { serverUrl } from './config';
 let socket = null;
 
 export const initSocket = (userId) => {
-    if (socket) return socket;
+    if (socket && socket.connected) return socket;
+    if (socket) {
+        socket.disconnect();
+    }
     socket = io(serverUrl, {
         query: { userId },
         withCredentials: true

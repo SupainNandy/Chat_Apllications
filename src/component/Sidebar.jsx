@@ -17,17 +17,33 @@ const Sidebar = () => {
     const [searchTerm, setSearchTerm] = useState('')
     const listRef = useRef(null)
 
-    const defaultAvatar = "https://img.magnific.com/premium-vector/vector-flat-illustration-grayscale-avatar-user-profile-person-icon-gender-neutral-silhouette-profile-picture-suitable-social-media-profiles-icons-screensavers-as-templatex9xa_719432-2210.jpg?semt=ais_hybrid&w=740&q=80"
+    const getAvatarSrc = (user) => {
+        if (user?.image && typeof user.image === 'string' && user.image.trim() !== '') {
+            return user.image;
+        }
+        return `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || user?.userName || 'User')}&background=1E2430&color=CBD5E1&bold=true`;
+    };
+
+    const isUserOnline = (userId) => {
+        if (!userId || !onlineUser) return false;
+        if (Array.isArray(onlineUser)) {
+            return onlineUser.map(id => String(id)).includes(String(userId));
+        }
+        if (typeof onlineUser === 'object') {
+            return Boolean(onlineUser[userId]);
+        }
+        return false;
+    };
 
     const usersToShow = (otherUsers || []).map((user) => ({
         ...user,
-        isOnline: onlineUser ? onlineUser.includes(user._id) : false
-    }))
+        isOnline: isUserOnline(user?._id)
+    }));
 
     const filteredUsers = usersToShow.filter((user) =>
         user?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         user?.userName?.toLowerCase().includes(searchTerm.toLowerCase())
-    )
+    );
 
     const onlineUsers = filteredUsers.filter(u => u.isOnline);
     const offlineUsers = filteredUsers.filter(u => !u.isOnline);
@@ -35,24 +51,74 @@ const Sidebar = () => {
     React.useEffect(() => {
         if (listRef.current && filteredUsers.length > 0) {
             gsap.from(".sidebar-user-item", {
-                y: 10,
+                y: 8,
                 opacity: 0,
-                duration: 0.4,
-                stagger: 0.05,
-                ease: "power2.out"
+                duration: 0.3,
+                stagger: 0.04,
+                ease: "power2.out",
+                clearProps: "all"
             });
         }
-    }, [filteredUsers]);
+    }, [filteredUsers.length]);
 
     const handleLogout = async () => {
         try {
-            await api.post('/api/auth/logout', {}, { withCredentials: true })
-            dispatch(clearUserData())
-            navigate('/login')
+            await api.post('/api/auth/logout', {}, { withCredentials: true });
+            dispatch(clearUserData());
+            navigate('/login');
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
-    }
+    };
+
+    const renderUserItem = (user) => {
+        const isSelected = selectedUser?._id === user?._id;
+        const avatarUrl = getAvatarSrc(user);
+
+        return (
+            <div
+                key={user?._id || user?.email}
+                onClick={() => dispatch(setSelectedUser(user))}
+                className={`sidebar-user-item group flex items-center gap-3 p-2.5 rounded-xl cursor-pointer transition-all duration-150 ${
+                    isSelected
+                        ? 'bg-[#1E2430] text-white shadow-sm border-l-4 border-[var(--color-primary)]'
+                        : 'hover:bg-[#1E2430]/70 text-[var(--color-text-secondary)]'
+                }`}
+            >
+                <div className='relative shrink-0'>
+                    <img
+                        src={avatarUrl}
+                        alt={user?.name || 'User'}
+                        onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'User')}&background=1E2430&color=CBD5E1&bold=true`;
+                        }}
+                        className='w-10 h-10 rounded-full object-cover border border-[var(--color-border-subtle)] group-hover:border-[var(--color-primary)]/50 transition-colors'
+                    />
+                    <span
+                        className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full ring-2 ring-[var(--color-sidebar-bg)] ${
+                            user?.isOnline ? 'bg-emerald-500' : 'bg-slate-600'
+                        }`}
+                    />
+                </div>
+
+                <div className='flex-1 min-w-0 flex flex-col justify-center'>
+                    <div className='flex items-center justify-between'>
+                        <h3 className={`font-semibold text-[13px] tracking-wide truncate ${
+                            isSelected ? 'text-[var(--color-text-primary)]' : 'text-slate-200 group-hover:text-white'
+                        }`}>
+                            {user?.name || user?.userName || 'User'}
+                        </h3>
+                    </div>
+                    <p className={`text-[11px] truncate font-medium ${
+                        user?.isOnline ? 'text-emerald-400' : 'text-slate-500'
+                    }`}>
+                        {user?.isOnline ? 'Online' : 'Offline'}
+                    </p>
+                </div>
+            </div>
+        );
+    };
 
     return (
         <aside className={`w-full md:w-[280px] h-full flex flex-col shrink-0 bg-[var(--color-sidebar-bg)] border-r border-[var(--color-border-subtle)] z-20 ${selectedUser ? 'hidden md:flex' : 'flex'}`}>
@@ -92,45 +158,16 @@ const Sidebar = () => {
                 <div ref={listRef}>
                     {onlineUsers.length > 0 && (
                         <div className="mb-6">
-                            <div className="px-2 mb-3 flex items-center justify-between">
-                                <h3 className="text-[11px] font-bold text-[var(--color-text-secondary)] uppercase tracking-widest">Online</h3>
-                                <span className="text-[10px] font-bold bg-[#1E2430] text-[var(--color-text-secondary)] px-1.5 py-0.5 rounded-md">{onlineUsers.length}</span>
+                            <div className="px-2 mb-2.5 flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                    <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                    <h3 className="text-[11px] font-bold text-slate-300 uppercase tracking-wider">Online</h3>
+                                </div>
+                                <span className="text-[10px] font-bold bg-[#1E2430] text-emerald-400 px-2 py-0.5 rounded-full border border-emerald-500/20">{onlineUsers.length}</span>
                             </div>
                             
-                            <div className='space-y-0.5'>
-                                {onlineUsers.map((user) => {
-                                    const isSelected = selectedUser?._id === user?._id
-                                    return (
-                                        <div
-                                            key={user?._id || user?.email}
-                                            onClick={() => dispatch(setSelectedUser(user))}
-                                            className={`sidebar-user-item group flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-colors ${
-                                                isSelected
-                                                    ? 'bg-[#1E2430]'
-                                                    : 'hover:bg-[#1E2430]'
-                                            }`}
-                                        >
-                                            <div className='relative shrink-0'>
-                                                <img
-                                                    src={user?.image || defaultAvatar}
-                                                    alt={user?.name || 'User'}
-                                                    className='w-8 h-8 rounded-full object-cover border border-transparent group-hover:border-[var(--color-border-subtle)] transition-colors'
-                                                />
-                                                {user?.isOnline && (
-                                                    <span className='absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-[#10B981] ring-2 ring-[var(--color-sidebar-bg)] group-hover:ring-[#1E2430] transition-colors'></span>
-                                                )}
-                                            </div>
-
-                                            <div className='flex-1 min-w-0 flex flex-col justify-center'>
-                                                <h3 className={`font-semibold text-[13px] tracking-wide truncate transition-colors ${
-                                                    isSelected ? 'text-[var(--color-text-primary)]' : 'text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-primary)]'
-                                                }`}>
-                                                    {user?.name || 'User'}
-                                                </h3>
-                                            </div>
-                                        </div>
-                                    )
-                                })}
+                            <div className='space-y-1'>
+                                {onlineUsers.map(renderUserItem)}
                             </div>
                         </div>
                     )}
@@ -138,48 +175,22 @@ const Sidebar = () => {
                     {/* Offline Users */}
                     {offlineUsers.length > 0 && (
                         <div>
-                            <div className="px-2 mb-3 flex items-center justify-between">
-                                <h3 className="text-[11px] font-bold text-[var(--color-text-secondary)] uppercase tracking-widest opacity-60">Offline</h3>
-                                <span className="text-[10px] font-bold bg-[#1E2430] text-[var(--color-text-secondary)] px-1.5 py-0.5 rounded-md opacity-60">{offlineUsers.length}</span>
+                            <div className="px-2 mb-2.5 flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                    <span className="w-2 h-2 rounded-full bg-slate-600"></span>
+                                    <h3 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Offline</h3>
+                                </div>
+                                <span className="text-[10px] font-bold bg-[#1E2430] text-slate-400 px-2 py-0.5 rounded-full border border-[var(--color-border-subtle)]">{offlineUsers.length}</span>
                             </div>
                             
-                            <div className='space-y-0.5'>
-                                {offlineUsers.map((user) => {
-                                    const isSelected = selectedUser?._id === user?._id
-                                    return (
-                                        <div
-                                            key={user?._id || user?.email}
-                                            onClick={() => dispatch(setSelectedUser(user))}
-                                            className={`sidebar-user-item group flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-colors opacity-50 hover:opacity-100 ${
-                                                isSelected
-                                                    ? 'bg-[#1E2430] opacity-100'
-                                                    : 'hover:bg-[#1E2430]'
-                                            }`}
-                                        >
-                                            <div className='relative shrink-0'>
-                                                <img
-                                                    src={user?.image || defaultAvatar}
-                                                    alt={user?.name || 'User'}
-                                                    className='w-8 h-8 rounded-full object-cover border border-transparent group-hover:border-[var(--color-border-subtle)] transition-colors grayscale'
-                                                />
-                                            </div>
-
-                                            <div className='flex-1 min-w-0 flex flex-col justify-center'>
-                                                <h3 className={`font-semibold text-[13px] tracking-wide truncate transition-colors ${
-                                                    isSelected ? 'text-[var(--color-text-primary)]' : 'text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-primary)]'
-                                                }`}>
-                                                    {user?.name || 'User'}
-                                                </h3>
-                                            </div>
-                                        </div>
-                                    )
-                                })}
+                            <div className='space-y-1'>
+                                {offlineUsers.map(renderUserItem)}
                             </div>
                         </div>
                     )}
 
                     {filteredUsers.length === 0 && (
-                        <p className='text-xs text-[var(--color-text-muted)] px-2 italic'>No users found</p>
+                        <p className='text-xs text-[var(--color-text-muted)] px-2 italic py-4 text-center'>No conversations found</p>
                     )}
                 </div>
 

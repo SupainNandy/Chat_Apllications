@@ -9,8 +9,14 @@ const DetailsPanel = ({ isOpen, onClose }) => {
 
     if (!selectedUser) return null
 
-    const defaultAvatar = "https://img.magnific.com/premium-vector/vector-flat-illustration-grayscale-avatar-user-profile-person-icon-gender-neutral-silhouette-profile-picture-suitable-social-media-profiles-icons-screensavers-as-templatex9xa_719432-2210.jpg?semt=ais_hybrid&w=740&q=80"
-    const isOnline = onlineUser ? onlineUser.includes(selectedUser._id) : false
+    const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(selectedUser?.name || 'User')}&background=1E2430&color=CBD5E1&bold=true`;
+    const isOnline = Boolean(
+        selectedUser && 
+        onlineUser && 
+        (Array.isArray(onlineUser) 
+            ? onlineUser.map(id => String(id)).includes(String(selectedUser._id))
+            : (typeof onlineUser === 'object' && Boolean(onlineUser[selectedUser._id])))
+    );
 
     return (
         <aside className={`absolute xl:relative right-0 top-0 w-[300px] h-full flex-shrink-0 bg-[var(--color-sidebar-bg)] border-l border-[var(--color-border-subtle)] flex flex-col z-30 transform transition-transform duration-300 ${isOpen ? 'translate-x-0' : 'translate-x-full xl:translate-x-0'}`}>
