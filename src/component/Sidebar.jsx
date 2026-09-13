@@ -7,7 +7,7 @@ import axios from 'axios'
 import { serverUrl } from '../config'
 import { clearUserData, setSelectedUser } from '../redux/userSlice'
 import gsap from 'gsap'
-import { useGSAP } from '@gsap/react'
+// Removed useGSAP import; using useEffect for animation
 import { useTheme } from '../context/ThemeContext'
 
 const Sidebar = () => {
@@ -17,7 +17,7 @@ const Sidebar = () => {
     const [searchTerm, setSearchTerm] = useState('')
     const listRef = useRef(null)
 
-    useGSAP(() => {
+    React.useEffect(() => {
         if (listRef.current && filteredUsers.length > 0) {
             gsap.from(".sidebar-user-item", {
                 y: 10,
@@ -27,7 +27,7 @@ const Sidebar = () => {
                 ease: "power2.out"
             });
         }
-    }, { scope: listRef, dependencies: [filteredUsers] });
+    }, [filteredUsers]);
 
     const defaultAvatar = "https://img.magnific.com/premium-vector/vector-flat-illustration-grayscale-avatar-user-profile-person-icon-gender-neutral-silhouette-profile-picture-suitable-social-media-profiles-icons-screensavers-as-templatex9xa_719432-2210.jpg?semt=ais_hybrid&w=740&q=80"
 
