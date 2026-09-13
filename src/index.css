@@ -1,1 +1,58 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
+
+@variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-app-bg: #0B0D12;
+  --color-sidebar-bg: #11141B;
+  --color-chat-bg: #0E1117;
+  
+  --color-primary: #7C3AED;
+  --color-primary-hover: #8B5CF6;
+  --color-primary-active: #6D28D9;
+  
+  --color-msg-user: #6D28D9;
+  --color-msg-other: #1E2430;
+  
+  --color-text-primary: #F8FAFC;
+  --color-text-secondary: #94A3B8;
+  --color-text-muted: #64748B;
+  
+  --color-border-subtle: #252B36;
+  
+  --color-status-online: #22C55E;
+  --color-status-warning: #F59E0B;
+  --color-status-error: #EF4444;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  body {
+    background-color: var(--color-app-bg);
+    color: var(--color-text-primary);
+  }
+}
+
+/* Custom smooth scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border-subtle);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-muted);
+}

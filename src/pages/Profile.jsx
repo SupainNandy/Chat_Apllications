@@ -1,80 +1,48 @@
 import React, { useRef, useState } from "react";
-import { IoCameraOutline, IoArrowBack } from "react-icons/io5";
+import { IoCameraOutline, IoArrowBack, IoPersonOutline, IoAtOutline, IoMailOutline, IoSunnyOutline, IoMoonOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-
 import { serverUrl } from "../config.js";
 import { setUserData } from "../redux/userSlice.js";
+import { useTheme } from "../context/ThemeContext";
 
 const Profile = () => {
-  // Get user data from Redux
   const { userData } = useSelector((state) => state.user);
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { theme, toggleTheme } = useTheme();
 
-  // Name state
   const [name, setName] = useState(userData?.name || "");
-
-  // Frontend image preview
   const [frontendImage, setFrontendImage] = useState(
     userData?.image ||
       "https://img.magnific.com/premium-vector/vector-flat-illustration-grayscale-avatar-user-profile-person-icon-gender-neutral-silhouette-profile-picture-suitable-social-media-profiles-icons-screensavers-as-templatex9xa_719432-2210.jpg?semt=ais_hybrid&w=740&q=80"
   );
-
-  // Image file for backend
   const [backend, setBackend] = useState(null);
-
-  // Loading state
   const [loading, setLoading] = useState(false);
+  const imageInputRef = useRef(null);
 
-  // File input reference
-  const image = useRef();
-
-  // ========================================
-  // Handle Image
-  // ========================================
   const handleImage = (e) => {
-    // Get selected file
     const file = e.target.files[0];
+    if (!file) return;
 
-    // If no file selected
-    if (!file) {
-      return;
-    }
-
-    // Save image file
     setBackend(file);
-
-    // Create image preview
     const imageUrl = URL.createObjectURL(file);
-
     setFrontendImage(imageUrl);
   };
 
-  // ========================================
-  // Handle Form Submit
-  // ========================================
   const handleSubmit = async (e) => {
-    // Prevent page reload
     e.preventDefault();
 
     try {
       setLoading(true);
-
-      // Create FormData
       const formData = new FormData();
-
-      // Add name
       formData.append("name", name);
 
-      // Add image only if user selected one
       if (backend) {
         formData.append("image", backend);
       }
 
-      // Send request to backend
       const result = await axios.put(
         `${serverUrl}/api/user/profile`,
         formData,
@@ -83,169 +51,169 @@ const Profile = () => {
         }
       );
 
-      console.log("Profile Updated:", result.data);
-
-      // Update Redux user data
       dispatch(setUserData(result.data.user));
-
-      // Update frontend image
       if (result.data.user?.image) {
         setFrontendImage(result.data.user.image);
       }
 
-      alert("Profile updated successfully!");
       navigate("/");
-
     } catch (error) {
-      console.log("Profile Update Error:", error);
-
-      if (error.response) {
-        console.log("Backend Error:", error.response.data);
-
-        alert(
-          error.response.data.message ||
-            "Profile update failed"
-        );
-      } else {
-        alert("Something went wrong. Please try again.");
-      }
-
+      console.error("Profile Update Error:", error);
+      alert(
+        error.response?.data?.message || "Profile update failed. Please try again."
+      );
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="w-full min-h-screen bg-slate-200 flex flex-col justify-center items-center p-4 relative">
+    <div className="min-h-screen w-full flex items-center justify-center p-4 bg-gradient-to-br from-slate-100 via-slate-50 to-cyan-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-cyan-950/20 relative overflow-hidden transition-colors duration-300">
+      {/* Ambient background glows */}
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/10 dark:bg-cyan-500/15 rounded-full blur-3xl pointer-events-none -z-10"></div>
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/10 dark:bg-blue-500/15 rounded-full blur-3xl pointer-events-none -z-10"></div>
 
-      {/* ========================================
-          Back Button
-      ======================================== */}
-      <div
-        onClick={() => navigate("/")}
-        className="absolute top-6 left-6 w-[45px] h-[45px] bg-white rounded-full shadow-md flex justify-center items-center cursor-pointer hover:bg-[#20c7ff] hover:text-white transition"
-      >
-        <IoArrowBack className="w-[25px] h-[25px]" />
+      {/* Top Controls Bar */}
+      <div className="absolute top-5 left-5 right-5 flex items-center justify-between">
+        {/* Back Button */}
+        <button
+          type="button"
+          onClick={() => navigate("/")}
+          className="w-10 h-10 rounded-2xl flex items-center justify-center bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-200 hover:scale-105 active:scale-95 transition-all shadow-sm cursor-pointer"
+          title="Back to chat"
+        >
+          <IoArrowBack className="w-5 h-5" />
+        </button>
+
+        {/* Theme Toggle */}
+        <button
+          type="button"
+          onClick={toggleTheme}
+          aria-label="Toggle theme"
+          className="w-10 h-10 rounded-2xl flex items-center justify-center bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-200 hover:scale-105 active:scale-95 transition-all shadow-sm cursor-pointer"
+        >
+          {theme === "dark" ? (
+            <IoSunnyOutline className="w-5 h-5 text-amber-400" />
+          ) : (
+            <IoMoonOutline className="w-5 h-5 text-slate-700" />
+          )}
+        </button>
       </div>
 
-      {/* ========================================
-          Profile Image
-      ======================================== */}
-      <div className="relative mb-8">
+      {/* Profile Card */}
+      <div className="w-full max-w-md bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl rounded-3xl border border-slate-200/80 dark:border-slate-800/80 shadow-2xl p-6 sm:p-8 transition-all my-12">
+        <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white text-center mb-6 tracking-tight">
+          Your Profile
+        </h1>
 
-        {/* Image */}
-        <div
-          onClick={() => image.current.click()}
-          className="w-[180px] h-[180px] bg-white rounded-full border-4 border-[#20c7ff] shadow-lg shadow-gray-400 flex justify-center items-center overflow-hidden cursor-pointer"
-        >
-          <img
-            src={frontendImage}
-            alt="Profile"
-            className="w-full h-full object-cover"
-          />
+        {/* Profile Avatar Uploader */}
+        <div className="flex flex-col items-center mb-8">
+          <div className="relative group cursor-pointer" onClick={() => imageInputRef.current?.click()}>
+            <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700 ring-4 ring-cyan-500/40 shadow-xl group-hover:ring-cyan-500 transition-all">
+              <img
+                src={frontendImage}
+                alt="Profile"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+            <div className="absolute inset-0 rounded-full bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
+              <IoCameraOutline className="w-8 h-8" />
+            </div>
+            <div className="absolute bottom-1 right-1 w-9 h-9 rounded-full bg-gradient-to-tr from-cyan-500 to-blue-600 text-white flex items-center justify-center shadow-lg border-2 border-white dark:border-slate-900 group-hover:scale-110 transition-transform">
+              <IoCameraOutline className="w-5 h-5" />
+            </div>
+          </div>
+          <p className="text-xs font-semibold text-cyan-600 dark:text-cyan-400 mt-3">
+            Tap photo to change avatar
+          </p>
         </div>
 
-        {/* Camera Button */}
-        <div
-          onClick={() => image.current.click()}
-          className="absolute bottom-2 right-2 w-[45px] h-[45px] bg-[#20c7ff] rounded-full flex justify-center items-center shadow-md cursor-pointer hover:bg-[#0fb8e8] transition"
-        >
-          <IoCameraOutline className="w-[25px] h-[25px] text-white" />
-        </div>
+        {/* Hidden File Input */}
+        <input
+          type="file"
+          hidden
+          accept="image/*"
+          ref={imageInputRef}
+          onChange={handleImage}
+        />
 
-      </div>
-
-      {/* ========================================
-          Hidden File Input
-      ======================================== */}
-      <input
-        type="file"
-        hidden
-        accept="image/*"
-        ref={image}
-        onChange={handleImage}
-      />
-
-      {/* ========================================
-          Form
-      ======================================== */}
-      <div className="w-full max-w-[450px] bg-white p-6 rounded-xl shadow-lg shadow-gray-300">
-
-        <h2 className="text-2xl font-bold text-gray-700 text-center mb-6">
-          Edit Profile
-        </h2>
-
-        <form
-          onSubmit={handleSubmit}
-          className="flex flex-col gap-5"
-        >
-
-          {/* ========================================
-              Name
-          ======================================== */}
+        {/* Profile Form */}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Name Field */}
           <div>
-            <label className="block mb-2 text-gray-600 font-semibold">
-              Name
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5 ml-1">
+              Full Name
             </label>
-
-            <input
-              type="text"
-              placeholder="Enter your name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full h-[50px] px-4 outline-none border-2 border-gray-200 rounded-lg shadow-sm text-[17px] focus:border-[#20c7ff]"
-            />
+            <div className="relative">
+              <IoPersonOutline className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 dark:text-slate-500 pointer-events-none" />
+              <input
+                type="text"
+                placeholder="Enter your name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full h-12 pl-11 pr-4 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all font-medium"
+              />
+            </div>
           </div>
 
-          {/* ========================================
-              Username
-          ======================================== */}
+          {/* Username Field (Read-only) */}
           <div>
-            <label className="block mb-2 text-gray-600 font-semibold">
-              Username
-            </label>
-
-            <input
-              type="text"
-              value={userData?.userName || ""}
-              placeholder="Username"
-              readOnly
-              className="w-full h-[50px] px-4 outline-none border-2 border-gray-200 bg-gray-100 rounded-lg shadow-sm text-[17px] text-gray-400 cursor-not-allowed"
-            />
+            <div className="flex items-center justify-between mb-1.5 ml-1">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">
+                Username
+              </label>
+              <span className="text-[10px] font-semibold text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full">
+                Permanent
+              </span>
+            </div>
+            <div className="relative">
+              <IoAtOutline className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 dark:text-slate-500 pointer-events-none" />
+              <input
+                type="text"
+                value={userData?.userName || ""}
+                readOnly
+                className="w-full h-12 pl-11 pr-4 rounded-2xl bg-slate-100/60 dark:bg-slate-800/40 border border-slate-200/60 dark:border-slate-700/40 text-sm text-slate-500 dark:text-slate-400 cursor-not-allowed font-medium"
+              />
+            </div>
           </div>
 
-          {/* ========================================
-              Email
-          ======================================== */}
+          {/* Email Field (Read-only) */}
           <div>
-            <label className="block mb-2 text-gray-600 font-semibold">
-              Email
-            </label>
-
-            <input
-              type="email"
-              value={userData?.email || ""}
-              placeholder="Email"
-              readOnly
-              className="w-full h-[50px] px-4 outline-none border-2 border-gray-200 bg-gray-100 rounded-lg shadow-sm text-[17px] text-gray-400 cursor-not-allowed"
-            />
+            <div className="flex items-center justify-between mb-1.5 ml-1">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">
+                Email
+              </label>
+              <span className="text-[10px] font-semibold text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full">
+                Permanent
+              </span>
+            </div>
+            <div className="relative">
+              <IoMailOutline className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 dark:text-slate-500 pointer-events-none" />
+              <input
+                type="email"
+                value={userData?.email || ""}
+                readOnly
+                className="w-full h-12 pl-11 pr-4 rounded-2xl bg-slate-100/60 dark:bg-slate-800/40 border border-slate-200/60 dark:border-slate-700/40 text-sm text-slate-500 dark:text-slate-400 cursor-not-allowed font-medium"
+              />
+            </div>
           </div>
 
-          {/* ========================================
-              Save Button
-          ======================================== */}
+          {/* Save Button */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full h-[50px] bg-[#20c7ff] text-white font-bold text-[17px] rounded-lg shadow-md hover:bg-[#0fb8e8] transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full h-12 mt-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold rounded-2xl shadow-lg shadow-cyan-500/25 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center gap-2"
           >
-            {loading ? "Saving..." : "Save Profile"}
+            {loading ? (
+              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+            ) : (
+              <span>Save Changes</span>
+            )}
           </button>
-
         </form>
       </div>
     </div>
   );
 };
 
-export default Profile;
+export default Profile;
