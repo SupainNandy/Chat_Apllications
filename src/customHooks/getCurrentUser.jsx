@@ -1,6 +1,6 @@
-import axios from "axios"
+import api from "../api";
 import { useEffect } from "react"
-import { serverUrl } from "../config"
+
 import { useDispatch, useSelector } from "react-redux"
 import { setUserData } from "../redux/userSlice"
 
@@ -10,9 +10,7 @@ const getCurrentUser = () =>{
     useEffect(()=>{
         const fetchUser=async()=>{
             try{
-                let result = await axios.get(`${serverUrl}/api/user/current`, {
-                    withCredentials: true,
-                })
+                let result = await api.get('/api/user/current');
                 dispatch(setUserData(result.data.user || result.data))
 
             }catch(err){

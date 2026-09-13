@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { IoIosSearch } from "react-icons/io"
 import { IoLogOutOutline, IoSettingsOutline, IoChevronDown, IoChatbubbleOutline, IoPeopleOutline, IoFolderOutline, IoGridOutline } from "react-icons/io5"
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import api from '../api'
 import { serverUrl } from '../config'
 import { clearUserData, setSelectedUser } from '../redux/userSlice'
 import gsap from 'gsap'
@@ -46,7 +46,7 @@ const Sidebar = () => {
 
     const handleLogout = async () => {
         try {
-            await axios.post(`${serverUrl}/api/auth/logout`, {}, { withCredentials: true })
+            await api.post('/api/auth/logout', {}, { withCredentials: true })
             dispatch(clearUserData())
             navigate('/login')
         } catch (error) {

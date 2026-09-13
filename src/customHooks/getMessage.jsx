@@ -1,7 +1,7 @@
-import axios from "axios"
+import api from "../api";
 import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { serverUrl } from "../config"
+
 import { setMessages } from "../redux/messageSlice"
 
 const getMessage = () =>{
@@ -12,9 +12,7 @@ const getMessage = () =>{
         const fetchUsers=async()=>{
             if (!selectedUser) return;
             try{
-                let result = await axios.get(`${serverUrl}/api/message/get/`, {
-                    withCredentials: true,
-                })
+                let result = await api.get('/api/message/get/');
                 dispatch(setMessages(Array.isArray(result.data) ? result.data : (result.data.data || [])))
 
             }catch(err){
