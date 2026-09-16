@@ -15,16 +15,24 @@ const App = () => {
   const { userData } = useSelector(state => state.user);
   const dispatch = useDispatch();
 
-  // Fetch current user and other users on mount
+  // Fetch current user on mount
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
         const result = await api.get('/api/user/current');
-        dispatch(setUserData(result.data.user || result.data));
+        if (result.data) {
+          dispatch(setUserData(result.data.user || result.data));
+        }
       } catch (err) {
-        console.error('Failed to fetch current user:', err);
+        // Unauthenticated visitor
       }
     };
+    fetchCurrentUser();
+  }, [dispatch]);
+
+  // Fetch other users only when logged in
+  useEffect(() => {
+    if (!userData) return;
     const fetchOtherUsers = async () => {
       try {
         const result = await api.get('/api/user/others');
@@ -33,9 +41,8 @@ const App = () => {
         console.error('Failed to fetch other users:', err);
       }
     };
-    fetchCurrentUser();
     fetchOtherUsers();
-  }, [dispatch]);
+  }, [userData, dispatch]);
 
 
 

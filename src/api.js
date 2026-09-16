@@ -18,12 +18,12 @@ api.interceptors.response.use(
                 // Retry the original request
                 return api(originalRequest);
             } catch (refreshError) {
-                // Refresh token is also expired — force user back to login
-                console.warn('Session expired. Redirecting to login...');
-                // Clear any persisted auth state from redux store via a storage event
+                // Refresh token is also expired
+                console.warn('Session expired.');
                 localStorage.removeItem('userData');
-                // Redirect to login without a full page reload loop
-                if (window.location.pathname !== '/login') {
+                // Only redirect if on protected routes
+                const publicPaths = ['/', '/login', '/signup'];
+                if (!publicPaths.includes(window.location.pathname)) {
                     window.location.href = '/login';
                 }
                 return Promise.reject(refreshError);
