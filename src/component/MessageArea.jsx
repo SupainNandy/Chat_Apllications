@@ -320,19 +320,13 @@ const MessageArea = () => {
               />
 
               <div className="flex items-center gap-1 shrink-0 pr-1">
-                  {!input.trim() ? (
-                      <button type="button" className="w-9 h-9 flex items-center justify-center rounded-lg text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-border-subtle)] transition-colors cursor-pointer">
-                          <IoMicOutline className="w-5 h-5" />
-                      </button>
-                  ) : (
-                      <button 
-                        type="submit" 
-                        disabled={isSending}
-                        className="w-9 h-9 flex items-center justify-center rounded-lg bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-hover)] transition-colors disabled:opacity-50 cursor-pointer"
-                      >
-                        <RiSendPlane2Fill className="w-4 h-4 ml-0.5" />
-                      </button>
-                  )}
+                  <button 
+                    type="submit" 
+                    disabled={isSending || (!input.trim() && !backendImage)}
+                    className="w-9 h-9 flex items-center justify-center rounded-lg bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-hover)] transition-all duration-200 disabled:opacity-40 disabled:scale-95 disabled:cursor-not-allowed cursor-pointer"
+                  >
+                    <RiSendPlane2Fill className="w-4 h-4 ml-0.5" />
+                  </button>
               </div>
             </form>
           </div>
