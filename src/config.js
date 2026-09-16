@@ -1,1 +1,1 @@
-export const serverUrl = import.meta.env.VITE_SERVER_URL || import.meta.env.SERVER_URL || (import.meta.env.MODE === 'production' ? "" : "http://localhost:4000");
+export const serverUrl = import.meta.env.SERVER_URL || (import.meta.env.MODE === 'production' ? "" : "http://localhost:4000");
