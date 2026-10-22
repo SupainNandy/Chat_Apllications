@@ -153,7 +153,3 @@ Potential improvements include:
 - Backend Project Repository: [Chat_Apllications](https://github.com/SupainNandy/Chat_Apllications_Backend)
 
 ---
-
-If you find this project useful, consider giving the repository a ⭐ on GitHub.
-
-*Built as a practical full-stack web development project.*
