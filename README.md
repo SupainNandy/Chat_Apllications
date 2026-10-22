@@ -1,23 +1,23 @@
-# 💬 Chat Application
+# Chat Application
 
 A full-stack chat application designed to provide users with a simple, intuitive, and seamless messaging experience. This project demonstrates full-stack web development, frontend and backend integration, API communication, and database management.
 
-## 🚀 Overview
+##  Overview
 
-The **Chat Application** is a web-based messaging project built to explore modern web technologies and real-world application development. It focuses on creating a responsive user interface, managing application data, and establishing reliable communication between the frontend and backend.
+The "Chat Application" is a web-based messaging project built to explore modern web technologies and real-world application development. It focuses on creating a responsive user interface, managing application data, and establishing reliable communication between the frontend and backend.
 
 The project serves as a practical demonstration of full-stack development concepts, including component-based architecture, server-side logic, and database integration.
 
-## ✨ Key Features
+## Key Features
 
-- 💬 **Messaging Interface** — A dedicated interface for conversations.
-- 🔐 **User Authentication** — Registration and login functionality, if implemented.
-- ⚡ **Real-Time Communication** — Instant message delivery using WebSockets or Socket.IO, if implemented.
-- 🗂️ **Message Management** — Message storage and retrieval, if implemented.
-- 📱 **Responsive UI** — A layout designed to work across different screen sizes.
-- 🔗 **Frontend–Backend Integration** — Communication between the client and server through APIs.
+- **Messaging Interface** — A dedicated interface for conversations.
+- **User Authentication** — Registration and login functionality, if implemented.
+- **Real-Time Communication** — Instant message delivery using WebSockets or Socket.IO, if implemented.
+- **Message Management** — Message storage and retrieval, if implemented.
+- **Responsive UI** — A layout designed to work across different screen sizes.
+- **Frontend–Backend Integration** — Communication between the client and server through APIs.
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 Update this section to match the technologies actually used in your project.
 
@@ -30,7 +30,7 @@ Update this section to match the technologies actually used in your project.
 | Language | JavaScript |
 | Version Control | Git, GitHub |
 
-## 📁 Project Structure
+## Project Structure
 
 The following is an example structure for a full-stack application. Adjust it to match your repository.
 
@@ -50,7 +50,7 @@ Chat_Apllications/
 └── README.md
 ```
 
-## ⚙️ Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -115,7 +115,7 @@ Open the local frontend URL displayed in your terminal.
 
 > **Note:** The commands and environment variables above are examples. Check your `package.json` files and application configuration before running them.
 
-## 🔒 Security Best Practices
+##  Security Best Practices
 
 - Keep environment variables and API credentials private.
 - Validate and sanitize incoming user input.
@@ -123,7 +123,7 @@ Open the local frontend URL displayed in your terminal.
 - Configure CORS for trusted origins.
 - Avoid exposing sensitive information in API responses.
 
-## 🎯 Learning Outcomes
+##  Learning Outcomes
 
 Through this project, the development process can demonstrate:
 
@@ -134,7 +134,7 @@ Through this project, the development process can demonstrate:
 - Understanding real-time communication concepts, if implemented.
 - Using Git and GitHub for version control.
 
-## 🔮 Future Enhancements
+##  Future Enhancements
 
 Potential improvements include:
 
@@ -145,12 +145,12 @@ Potential improvements include:
 - Message search and conversation history.
 - Notifications and improved mobile responsiveness.
 
-## 👨‍💻 Author
+##  Author
 
 **Supain Nandy**
 
 - GitHub: [@SupainNandy](https://github.com/SupainNandy)
-- Project Repository: [Chat_Apllications](https://github.com/SupainNandy/Chat_Apllications)
+- Backend Project Repository: [Chat_Apllications](https://github.com/SupainNandy/Chat_Apllications_Backend)
 
 ---
 
