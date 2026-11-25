@@ -2,7 +2,7 @@
 
 A frontend application for a chat system, designed to provide the user interface for interacting with the chat backend. This repository contains the client-side code, while the backend API and server-side functionality are maintained separately.
 
-## Project Overview
+## Project Overview 
 
 The Chat Applications frontend is part of a full-stack chat application project. It focuses on the client-side experience and integration with the backend services.
 
